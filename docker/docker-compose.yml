@@ -1,0 +1,28 @@
+version: '3.0'
+
+services:
+  starter_db_service:
+    image: postgres
+    container_name: starter_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: starter
+      POSTGRES_DB: starter
+    ports:
+      - '54321:5432'
+    volumes:
+      - ./init-db-test.sql:/docker-entrypoint-initdb.d/init-db-test.sql
+      - starter_db_data:/var/lib/postgresql/data
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+volumes:
+  starter_db_data:
+    external: true
+  cache:
+    driver: local
